@@ -57,7 +57,14 @@ export default function Landing() {
   return (
     <div style={{minHeight:"100vh",background:C.bg,color:C.text,fontFamily:"'Inter','Segoe UI',sans-serif",overflowX:"hidden"}}>
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg}}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}`}</style>
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg}}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}
+@media (min-width: 768px) {
+  .nu-sec { max-width: 720px !important; }
+  .nu-grid { grid-template-columns: 1fr 1fr 1fr !important; }
+}
+@media (min-width: 1024px) {
+  .nu-sec { max-width: 800px !important; }
+}`}</style>
       <LeadModal open={showForm} onClose={()=>setShowForm(false)}/>
       <header style={{position:"fixed",top:0,left:0,right:0,zIndex:50,padding:"12px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",background:sy>50?`${C.bg}ee`:"transparent",backdropFilter:sy>50?"blur(12px)":"none",borderBottom:sy>50?`1px solid ${C.border}`:"1px solid transparent",transition:"all .3s"}}>
         <div style={{fontFamily:"'Orbitron'",fontSize:12,fontWeight:800,color:C.cyan,letterSpacing:3}}>НЕЙРО-ЮНИТ</div>
@@ -66,15 +73,15 @@ export default function Landing() {
 
       <section style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:"80px 24px 40px"}}>
         <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,border:`1px solid ${C.gold}20`,background:`${C.gold}06`,marginBottom:24,animation:"fadeUp .6s ease .1s both"}}><SparkIcon color={C.gold}/><span style={{fontFamily:"'Orbitron'",fontSize:9,color:C.gold,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600}}>Попробуй новый формат обучения</span></div>
-        <h1 style={{fontFamily:"'Orbitron'",fontSize:"clamp(22px,5.5vw,36px)",fontWeight:800,lineHeight:1.25,marginBottom:22,maxWidth:580,animation:"fadeUp .8s ease .2s both"}}><span style={{color:C.text}}>Учиться так, что </span><span style={{background:`linear-gradient(90deg,${C.cyan},${C.purple},${C.cyan})`,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 3s linear infinite"}}>не хочется останавливаться</span></h1>
-        <p style={{fontSize:"clamp(13px,3vw,16px)",color:C.muted,lineHeight:1.8,maxWidth:460,marginBottom:32,animation:"fadeUp .8s ease .4s both"}}>Мы построили платформу, где обучение — это не «досмотри видео до конца», а процесс, который<span style={{color:C.text,fontWeight:500}}> захватывает</span>,<span style={{color:C.text,fontWeight:500}}> удерживает внимание</span> и<span style={{color:C.text,fontWeight:500}}> даёт результат</span>.<br/><br/>Приходи на бесплатный живой урок — покажем, как это работает.</p>
+        <h1 style={{fontFamily:"'Orbitron'",fontSize:"clamp(22px,5.5vw,36px)",fontWeight:800,lineHeight:1.25,marginBottom:22,maxWidth:700,animation:"fadeUp .8s ease .2s both"}}><span style={{color:C.text}}>Учиться так, что </span><span style={{background:`linear-gradient(90deg,${C.cyan},${C.purple},${C.cyan})`,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 3s linear infinite"}}>не хочется останавливаться</span></h1>
+        <p style={{fontSize:"clamp(13px,3vw,16px)",color:C.muted,lineHeight:1.8,maxWidth:560,marginBottom:32,animation:"fadeUp .8s ease .4s both"}}>Мы построили платформу, где обучение — это не «досмотри видео до конца», а процесс, который<span style={{color:C.text,fontWeight:500}}> захватывает</span>,<span style={{color:C.text,fontWeight:500}}> удерживает внимание</span> и<span style={{color:C.text,fontWeight:500}}> даёт результат</span>.<br/><br/>Приходи на бесплатный живой урок — покажем, как это работает.</p>
         <div style={{display:"flex",gap:10,marginBottom:32,flexWrap:"wrap",justifyContent:"center",animation:"fadeUp .7s ease .5s both"}}>
           {[{icon:<BrainIcon color={C.cyan}/>,label:"Наука внутри",color:C.cyan},{icon:<GameIcon color={C.pink}/>,label:"Геймификация",color:C.pink},{icon:<UserIcon color={C.green}/>,label:"Живой педагог",color:C.green}].map((p,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:10,border:`1px solid ${p.color}18`,background:`${p.color}06`}}>{p.icon}<span style={{fontSize:12,color:p.color,fontWeight:600}}>{p.label}</span></div>))}
         </div>
         <div style={{animation:"fadeUp .8s ease .6s both",display:"flex",flexDirection:"column",alignItems:"center",gap:10}}><CTABtn big onClick={openForm}>Записаться бесплатно</CTABtn><span style={{fontSize:10,color:C.dim}}>60 мин • без оплаты • без предварительных знаний</span></div>
       </section>
 
-      <section style={sec}>
+      <section style={sec} className="nu-sec">
         <Tag color={C.gold}>Почему это работает</Tag><H2>Внутри платформы — настоящая наука об обучении</H2>
         <p style={{textAlign:"center",fontSize:13,color:C.muted,lineHeight:1.6,marginBottom:24,maxWidth:460,margin:"0 auto 24px"}}>Мы не придумывали это на коленке. Каждая механика основана на исследованиях о том, как мозг запоминает, что его мотивирует и когда обучение реально работает.</p>
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
@@ -83,25 +90,25 @@ export default function Landing() {
         <p style={{textAlign:"center",marginTop:20,fontSize:14,color:C.text,lineHeight:1.6}}>Мы не знаем других платформ, которые объединяют всё это в одном месте.<br/><span style={{color:C.cyan}}>Приходи — увидишь сам.</span></p>
       </section><SectionDiv/>
 
-      <section style={sec}>
+      <section style={sec} className="nu-sec">
         <Tag color={C.cyan}>На уроке</Tag><H2>Что тебя ждёт</H2>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div className="nu-grid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
           {[{icon:<UserIcon color={C.green}/>,color:C.green,title:"Живой преподаватель",text:"Объясняет, отвечает на вопросы, ведёт по платформе"},{icon:<ChatIcon color={C.purple}/>,color:C.purple,title:"AI-тьютор в чате",text:"Персональный помощник, который знает тему и подстраивается"},{icon:<GameIcon color={C.pink}/>,color:C.pink,title:"Мини-игра",text:"Собирай полезные принципы, уворачивайся от ловушек"},{icon:<PenIcon color={C.gold}/>,color:C.gold,title:"Практика + AI-критик",text:"Напишешь промпт — ИИ оценит и подскажет, что улучшить"},{icon:<BrainIcon color={C.cyan}/>,color:C.cyan,title:"Адаптация под тебя",text:"Увидишь, как платформа подстраивает контент в реальном времени"},{icon:<BookIcon color={C.text}/>,color:C.text,title:"Основы ИИ с нуля",text:"Нейросети, промпты, токены — без жаргона, простым языком"}].map((c,i)=>(<div key={i} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:12,padding:"16px 14px"}}><div style={{marginBottom:10}}><Icon color={c.color} size={36}>{c.icon}</Icon></div><div style={{fontSize:13,fontWeight:600,color:c.color,marginBottom:4}}>{c.title}</div><div style={{fontSize:12,color:C.muted,lineHeight:1.5}}>{c.text}</div></div>))}
         </div>
         <div style={{marginTop:16,padding:"12px 14px",background:`${C.gold}06`,borderRadius:10,border:`1px solid ${C.gold}12`,textAlign:"center"}}><span style={{fontSize:12,color:C.gold}}><span style={{fontWeight:700}}>Для кого:</span> абсолютные новички. Никаких знаний не нужно.</span></div>
       </section><SectionDiv/>
 
-      <section style={sec}>
+      <section style={sec} className="nu-sec">
         <Tag color={C.purple}>Кто ведёт</Tag>
         <div style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:16,padding:"24px 20px"}}>
-          <div style={{textAlign:"center",marginBottom:20}}><div style={{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${C.cyan}20,${C.purple}20)`,margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${C.cyan}20`}}><UserIcon color={C.cyan}/></div><div style={{fontFamily:"'Orbitron'",fontSize:17,fontWeight:700,marginBottom:3}}>Игорь Журкин</div><div style={{fontSize:10,color:C.cyan,fontFamily:"'Orbitron'",letterSpacing:1}}>ОСНОВАТЕЛЬ НЕЙРО-ЮНИТ</div></div>
+          <div style={{textAlign:"center",marginBottom:20}}><div style={{width:72,height:72,borderRadius:"50%",background:`linear-gradient(135deg,${C.cyan}20,${C.purple}20)`,margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",border:`2px solid ${C.cyan}20`}}><img src="/author.jpg" alt="Игорь Журкин" style={{ width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover" }} /></div><div style={{fontFamily:"'Orbitron'",fontSize:17,fontWeight:700,marginBottom:3}}>Игорь Журкин</div><div style={{fontSize:10,color:C.cyan,fontFamily:"'Orbitron'",letterSpacing:1}}>ОСНОВАТЕЛЬ НЕЙРО-ЮНИТ</div></div>
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {[{icon:<BookIcon color={C.cyan}/>,color:C.cyan,title:"Преподаватель Университета ИТМО",text:"Факультет среднего профессионального образования + кафедра технологий профессионального обучения (курс «Проектирование информационных систем»). 7+ лет."},{icon:<PenIcon color={C.purple}/>,color:C.purple,title:"Учёный, аспирант ИТМО",text:"Научные публикации в РИНЦ: психология цветового восприятия, структурирование учебного материала, методики запоминания."},{icon:<AwardIcon color={C.gold}/>,color:C.gold,title:"Автор проекта «Магия ума»",text:"Образовательная онлайн-игра — дипломы Всероссийского форума «Образовательная среда», Правительства СПб. Внедрена в школах 4 регионов."},{icon:<BookIcon color={C.green}/>,color:C.green,title:"Крупнейший курс по ИИ в России",text:"Автор курса по нейросетям для издательства «Просвещение» — главного образовательного издательства страны."},{icon:<SparkIcon color={C.pink}/>,color:C.pink,title:"176 000 подписчиков YouTube",text:"Практика ИИ: бизнес, маркетинг, копирайтинг, автоматизация."}].map((item,i)=>(<div key={i} style={{display:"flex",gap:12,alignItems:"flex-start",padding:"10px 12px",background:`${item.color}04`,borderRadius:10,border:`1px solid ${item.color}08`}}><Icon color={item.color} size={36}>{item.icon}</Icon><div><div style={{fontSize:13,fontWeight:600,color:item.color,marginBottom:2}}>{item.title}</div><div style={{fontSize:12,color:C.muted,lineHeight:1.5}}>{item.text}</div></div></div>))}
           </div>
         </div>
       </section><SectionDiv/>
 
-      <section style={sec}>
+      <section style={sec} className="nu-sec">
         <Tag color={C.green}>Куда это ведёт</Tag><H2>Вход в 21-дневную программу</H2>
         <div style={{position:"relative",paddingLeft:28}}>
           <div style={{position:"absolute",left:8,top:4,bottom:4,width:2,background:`linear-gradient(180deg,${C.cyan}50,${C.purple}40,${C.gold}20,${C.dim}15)`}}/>
