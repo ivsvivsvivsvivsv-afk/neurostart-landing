@@ -315,7 +315,7 @@ export default function Landing() {
           </div>
 
           <div style={{ flex: 1, minWidth: 280, paddingTop: 20, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#b0b0c0", letterSpacing: 0, marginBottom: 20, lineHeight: 1.5 }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#00d4ff", letterSpacing: 0, marginBottom: 20, lineHeight: 1.5 }}>
               Основатель НЕЙРО-ЮНИТ • 20 лет в IT • 3 года внедряет ИИ в бизнес • учёный-практик
             </div>
 
