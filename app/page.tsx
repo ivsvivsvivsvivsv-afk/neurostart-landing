@@ -387,7 +387,6 @@ export default function Landing() {
           border: `1px solid ${C.border}`,
           borderRadius: 20,
           padding: "0",
-          overflow: "hidden",
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
@@ -398,6 +397,7 @@ export default function Landing() {
             flex: "0 0 280px",
             alignSelf: "stretch",
             position: "relative",
+            overflow: "hidden",
             background: `linear-gradient(135deg, ${C.cyan}10, ${C.purple}10)`,
           }}>
             <img src="/author.jpg" alt="Игорь Журкин" style={{
