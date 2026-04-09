@@ -27,10 +27,10 @@ const testLevels = [
 
 const getTestLevel = (score: number) => testLevels.find(l => score >= l.min && score <= l.max) || testLevels[0];
 
-const BrainIcon = ({ color = C.cyan }: { color?: string }) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2a5 5 0 00-4.5 7.2A5 5 0 004 14a5 5 0 003.5 4.8A3 3 0 0012 22a3 3 0 004.5-3.2A5 5 0 0020 14a5 5 0 00-3.5-4.8A5 5 0 0012 2z"/><path d="M12 2v20" strokeDasharray="2 3" opacity="0.5"/></svg>);
-const SparkIcon = ({ color = C.gold }: { color?: string }) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>);
-const GameIcon = ({ color = C.pink }: { color?: string }) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="4" y1="12" x2="8" y2="12"/><circle cx="16" cy="10" r="1" fill={color}/><circle cx="19" cy="12" r="1" fill={color}/></svg>);
-const UserIcon = ({ color = C.cyan }: { color?: string }) => (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
+const BrainIcon = ({ color = C.cyan, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2a5 5 0 00-4.5 7.2A5 5 0 004 14a5 5 0 003.5 4.8A3 3 0 0012 22a3 3 0 004.5-3.2A5 5 0 0020 14a5 5 0 00-3.5-4.8A5 5 0 0012 2z"/><path d="M12 2v20" strokeDasharray="2 3" opacity="0.5"/></svg>);
+const SparkIcon = ({ color = C.gold, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>);
+const GameIcon = ({ color = C.pink, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="4" y1="12" x2="8" y2="12"/><circle cx="16" cy="10" r="1" fill={color}/><circle cx="19" cy="12" r="1" fill={color}/></svg>);
+const UserIcon = ({ color = C.cyan, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
 
 const SectionDiv = () => (<div style={{ display:"flex",alignItems:"center",justifyContent:"center",padding:"44px 0",gap:12, position:"relative", zIndex:1 }}><div style={{ width:50,height:1,background:`linear-gradient(90deg,transparent,${C.cyan}25)` }}/><div style={{ width:4,height:4,borderRadius:"50%",background:C.cyan,opacity:.25 }}/><div style={{ width:50,height:1,background:`linear-gradient(90deg,${C.cyan}25,transparent)` }}/></div>);
 const Tag = ({ children, color = C.cyan }: { children: React.ReactNode; color?: string }) => (<div style={{ fontFamily:"'Orbitron',sans-serif",fontSize:10,color,letterSpacing:3,textTransform:"uppercase",marginBottom:14,textAlign:"center" }}>{children}</div>);
@@ -163,7 +163,12 @@ export default function Landing() {
     <div style={{minHeight:"100vh",background:C.bg,color:C.text,fontFamily:"'Inter','Segoe UI',sans-serif",overflowX:"hidden",position:"relative"}}>
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 20% 50%, #00d4ff06 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, #8b5cf606 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, #ff4d8d04 0%, transparent 50%)" }} />
-        <div style={{ position: "absolute", inset: 0, backgroundImage: `radial-gradient(circle, #00d4ff12 1px, transparent 1px)`, backgroundSize: "40px 40px", opacity: 0.3 }} />
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ctext x='30' y='35' text-anchor='middle' font-size='14' fill='%2300d4ff' opacity='0.04' font-family='monospace'%3E01%3C/text%3E%3C/svg%3E")`,
+          backgroundSize: "60px 60px",
+        }} />
       </div>
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg}}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}`}</style>
@@ -179,11 +184,11 @@ export default function Landing() {
 
       <section style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:"100px 24px 60px"}}>
         <div style={{ width: "100%", maxWidth: 900 }}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,border:`1px solid ${C.gold}20`,background:`${C.gold}06`,marginBottom:24,animation:"fadeUp .6s ease .1s both"}}><SparkIcon color={C.gold}/><span style={{fontFamily:"'Orbitron'",fontSize:9,color:C.gold,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600}}>Попробуй новый формат обучения</span></div>
+          <div style={{display:"inline-flex",alignItems:"center",gap:6,padding:"5px 14px",borderRadius:100,border:`1px solid ${C.gold}30`,background:`${C.gold}12`,marginBottom:24,animation:"fadeUp .6s ease .1s both"}}><SparkIcon color={C.gold}/><span style={{fontFamily:"'Orbitron'",fontSize:9,color:C.gold,letterSpacing:1.5,textTransform:"uppercase",fontWeight:600}}>Попробуй новый формат обучения</span></div>
           <h1 style={{fontFamily:"'Orbitron'",fontSize:"clamp(28px, 6vw, 52px)",fontWeight:800,lineHeight:1.25,marginBottom:22,maxWidth:800,marginLeft:"auto",marginRight:"auto",animation:"fadeUp .8s ease .2s both"}}><span style={{color:C.text}}>Учиться так, что </span><span style={{background:`linear-gradient(90deg,${C.cyan},${C.purple},${C.cyan})`,backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 3s linear infinite"}}>не хочется останавливаться</span></h1>
           <p style={{fontSize:"clamp(16px, 3vw, 20px)",color:C.muted,lineHeight:1.8,maxWidth:640,marginLeft:"auto",marginRight:"auto",marginBottom:32,animation:"fadeUp .8s ease .4s both"}}>Мы построили платформу, где обучение — это не «досмотри видео до конца», а процесс, который<span style={{color:C.text,fontWeight:500}}> захватывает</span>,<span style={{color:C.text,fontWeight:500}}> удерживает внимание</span> и<span style={{color:C.text,fontWeight:500}}> даёт результат</span>.<br/><br/>Приходи на бесплатный живой урок — покажем, как это работает.</p>
           <div style={{display:"flex",gap:10,marginBottom:32,flexWrap:"wrap",justifyContent:"center",animation:"fadeUp .7s ease .5s both"}}>
-            {[{icon:<BrainIcon color={C.cyan}/>,label:"Наука внутри",color:C.cyan},{icon:<GameIcon color={C.pink}/>,label:"Геймификация",color:C.pink},{icon:<UserIcon color={C.green}/>,label:"Живой педагог",color:C.green}].map((p,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 14px",borderRadius:10,border:`1px solid ${p.color}18`,background:`${p.color}06`}}>{p.icon}<span style={{fontSize:12,color:p.color,fontWeight:600}}>{p.label}</span></div>))}
+            {[{icon:<BrainIcon color={C.cyan} size={20}/>,label:"Наука внутри",color:C.cyan},{icon:<GameIcon color={C.pink} size={20}/>,label:"Геймификация",color:C.pink},{icon:<UserIcon color={C.green} size={20}/>,label:"Живой педагог",color:C.green}].map((p,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 18px",borderRadius:10,border:`1px solid ${p.color}18`,background:`${p.color}06`}}>{p.icon}<span style={{fontSize:14,color:p.color,fontWeight:600}}>{p.label}</span></div>))}
           </div>
           <div style={{animation:"fadeUp .8s ease .6s both",display:"flex",flexDirection:"column",alignItems:"center",gap:10}}><CTABtn big onClick={openForm}>Записаться бесплатно</CTABtn><span style={{fontSize:10,color:C.dim}}>60 мин • без оплаты • без предварительных знаний</span></div>
         </div>
@@ -273,7 +278,7 @@ export default function Landing() {
             <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 14px" }}>
               <div style={{ fontSize: 32, marginBottom: 12 }}>{c.emoji}</div>
               <div style={{ fontSize: 17, fontWeight: 600, color: c.color, marginBottom: 4 }}>{c.title}</div>
-              <div style={{ fontSize: 15, color: C.muted, lineHeight: 1.5 }}>{c.text}</div>
+              <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.5 }}>{c.text}</div>
             </div>
           ))}
         </div>
@@ -291,6 +296,7 @@ export default function Landing() {
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
+          alignItems: "flex-start",
         }}>
           <div style={{
             flex: "0 0 280px",
@@ -307,8 +313,8 @@ export default function Landing() {
             }} />
           </div>
 
-          <div style={{ flex: 1, minWidth: 280, padding: "32px 28px" }}>
-            <div style={{ fontFamily: "'Orbitron'", fontSize: 22, fontWeight: 800, color: C.text, marginBottom: 4 }}>Игорь Журкин</div>
+          <div style={{ flex: 1, minWidth: 280, paddingTop: 32, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
+            <div style={{ fontFamily: "'Orbitron'", fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 4 }}>Игорь Журкин</div>
             <div style={{ fontFamily: "'Orbitron'", fontSize: 11, color: C.cyan, letterSpacing: 1, marginBottom: 20 }}>ОСНОВАТЕЛЬ НЕЙРО-ЮНИТ</div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -322,8 +328,8 @@ export default function Landing() {
                 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                   <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{item.emoji}</span>
                   <div>
-                    <div style={{ fontSize: 17, fontWeight: 600, color: item.color, marginBottom: 2 }}>{item.title}</div>
-                    <div style={{ fontSize: 15, color: C.muted, lineHeight: 1.5 }}>{item.text}</div>
+                    <div style={{ fontSize: 17, fontWeight: 600, color: C.text, marginBottom: 2 }}>{item.title}</div>
+                    <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.5 }}>{item.text}</div>
                   </div>
                 </div>
               ))}
