@@ -287,6 +287,7 @@ export default function Landing() {
 
       <section style={{ padding: "40px 24px", maxWidth: 1060, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
         <Tag color={C.purple}>Кто ведёт</Tag>
+        <H2>Игорь Журкин</H2>
         <div style={{
           background: C.card,
           border: `1px solid ${C.border}`,
@@ -300,7 +301,7 @@ export default function Landing() {
         }}>
           <div style={{
             flex: "0 0 280px",
-            minHeight: 360,
+            alignSelf: "stretch",
             position: "relative",
             background: `linear-gradient(135deg, ${C.cyan}10, ${C.purple}10)`,
           }}>
@@ -313,9 +314,10 @@ export default function Landing() {
             }} />
           </div>
 
-          <div style={{ flex: 1, minWidth: 280, paddingTop: 32, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
-            <div style={{ fontFamily: "'Orbitron'", fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 4 }}>Игорь Журкин</div>
-            <div style={{ fontFamily: "'Orbitron'", fontSize: 11, color: C.cyan, letterSpacing: 1, marginBottom: 20 }}>ОСНОВАТЕЛЬ НЕЙРО-ЮНИТ</div>
+          <div style={{ flex: 1, minWidth: 280, paddingTop: 20, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#b0b0c0", letterSpacing: 0, marginBottom: 20, lineHeight: 1.5 }}>
+              Основатель НЕЙРО-ЮНИТ • 20 лет в IT • 3 года внедряет ИИ в бизнес • учёный-практик
+            </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {[
@@ -326,7 +328,7 @@ export default function Landing() {
                 { emoji: "🎬", color: C.pink, title: "176 000 подписчиков YouTube", text: "Практика ИИ: бизнес, маркетинг, копирайтинг, автоматизация." },
               ].map((item, i) => (
                 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{item.emoji}</span>
+                  <span style={{ fontSize: 22, flexShrink: 0, alignSelf: "flex-start", marginTop: 3 }}>{item.emoji}</span>
                   <div>
                     <div style={{ fontSize: 17, fontWeight: 600, color: C.text, marginBottom: 2 }}>{item.title}</div>
                     <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.5 }}>{item.text}</div>
@@ -340,11 +342,9 @@ export default function Landing() {
 
       <div style={{ ...sectionWrap, padding: "50px 24px 36px", textAlign: "center" }}>
         <Tag color={C.gold}>Старт через</Tag>
-        <div style={{ fontFamily: "'Orbitron'", fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 12 }}>
-          Вторник, 14 апреля 2026 — 19:00 МСК
-        </div>
+        <H2>Вторник, 14 апреля 2026 — 19:00 МСК</H2>
         <Timer/>
-        <h2 style={{fontFamily:"'Orbitron'",fontSize:"clamp(19px,4.5vw,28px)",fontWeight:800,marginTop:26,marginBottom:12,lineHeight:1.25}}><span style={{color:C.text}}>Приходи посмотреть, </span><span style={{color:C.cyan}}>как это устроено</span></h2>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: "#b0b0c0", marginTop: 26, marginBottom: 12, lineHeight: 1.5, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>Приходи посмотреть, как это устроено</p>
         <p style={{fontSize:16,color:C.muted,lineHeight:1.6,marginBottom:26,maxWidth:400,margin:"0 auto 26px"}}>60 минут. Бесплатно. Живой преподаватель + AI-платформа. Никаких предварительных знаний.</p>
         <CTABtn big onClick={openForm}>Записаться на урок</CTABtn>
         <div style={{marginTop:14}}><span style={{fontSize:10,color:C.dim}}>Без оплаты • Без карты • Без спама</span></div>
