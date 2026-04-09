@@ -120,13 +120,13 @@ const LeadModal = ({ open, onClose, testResult }: { open: boolean; onClose: () =
   );
 };
 
-const scienceBlocks: { color: string; digit: string; title: string; text: string; badge: string }[] = [
-  { color: C.gold, digit: "2σ", title: "Задача Блума — решена", text: "В 1984 году Бенджамин Блум доказал: ученик с персональным репетитором обгоняет 98% класса. Проблема — репетитора невозможно дать каждому. Наш AI-тьютор решает эту задачу: он знает тему, знает тебя и адаптируется в реальном времени.", badge: "Bloom's 2-Sigma Problem → AI-тьютор как персональный репетитор" },
-  { color: C.pink, digit: "+73%", title: "Вовлечённость через геймификацию", text: "Квесты, XP, мини-игры, босс-файты — мозг получает дофамин при каждом достижении. Исследования показывают: геймификация повышает вовлечённость на 73% и на 45% снижает количество бросивших обучение.", badge: "Дофаминовые петли → маленькие победы → желание продолжать" },
-  { color: C.cyan, digit: "×2.5", title: "Обучение через действие", text: "Ты не смотришь лекции — ты играешь, пишешь промпты, решаешь задачи и получаешь обратную связь. Каждый урок — цикл: попробуй → осмысли → изучи теорию → примени снова. Запоминание в 2.5 раза выше, чем при пассивном просмотре.", badge: "Цикл Колба → опыт → рефлексия → теория → практика" },
-  { color: C.purple, digit: "6", title: "Осей когнитивного профиля", text: "Платформа незаметно определяет 6 параметров: визуал/вербал, темп, глубина, риск, системность, самостоятельность. Без тестов и анкет — по реальным действиям. Из этих данных строится цифровой двойник ученика.", badge: "Стелс-профилирование → данные из поведения, не из самоотчётов" },
-  { color: C.green, digit: "FLOW", title: "Состояние потока", text: "Когда задача слишком лёгкая — скучно. Слишком сложная — тревога. Платформа держит тебя в зоне потока: AI-методист после каждого урока анализирует результаты и подстраивает сложность следующего.", badge: "Теория потока Чиксентмихайи → оптимальный вызов на каждом шаге" },
-  { color: C.gold, digit: "24/7", title: "AI-тьютор подстраивается под тебя", text: "После каждого урока AI-методист пересобирает промпт тьютора на основе твоего профиля. Тьютор знает твои сильные стороны, слабые темы и стиль обучения. Он становится точнее с каждым уроком.", badge: "Хьютагогика → самоопределяемое обучение с AI-поддержкой" },
+const scienceBlocks = [
+  { digit: "2σ", title: "Персональный репетитор для каждого", text: "Учёный Бенджамин Блум доказал: ученик с личным репетитором обгоняет 98% обычного класса. Проблема — нанять репетитора каждому невозможно. Мы заменили репетитора AI-тьютором, который знает тему урока, помнит твои ошибки и объясняет так, как понятно именно тебе.", result: "Ты получаешь персональные объяснения — без очереди и расписания" },
+  { digit: "×2.5", title: "Учишься делая, а не слушая", text: "Посмотрел лекцию — через неделю забыл 80%. Но если ты сам решал задачу, писал промпт, играл в игру — мозг запоминает в 2.5 раза больше. Каждый урок на платформе — это цикл: попробуй → осмысли → прочитай теорию → примени снова.", result: "Знания остаются надолго, потому что ты учишься через действие" },
+  { digit: "+73%", title: "Не заставляешь себя — хочешь продолжать", text: "Обычные курсы бросают 87% людей. Здесь — квесты, XP за каждое действие, мини-игры и финальный босс. Мозг получает дофамин при каждой маленькой победе и сам просит продолжения. Геймификация повышает вовлечённость на 73%.", result: "Ты доходишь до конца, потому что процесс захватывает" },
+  { digit: "6", title: "Психологическое профилирование", text: "Пока ты проходишь урок, платформа незаметно строит твой когнитивный профиль по 6 параметрам: визуал или текст, быстрый или вдумчивый темп, рискуешь или перестраховываешься. Никаких анкет — только наблюдение за реальными действиями.", result: "Контент и тьютор подстраиваются лично под твой стиль мышления" },
+  { digit: "FLOW", title: "Всегда на грани возможностей", text: "Слишком легко — скучно. Слишком сложно — бросаешь. Состояние потока — когда задача чуть сложнее, чем ты можешь, и ты полностью вовлечён. AI-методист после каждого урока подстраивает сложность следующего.", result: "Ты не скучаешь и не перегружаешься — учишься в потоке" },
+  { digit: "24/7", title: "Тьютор, который помнит всё о тебе", text: "После каждого урока AI-методист анализирует: что понял, где ошибся, какие темы повторить. Промпт тьютора пересобирается — и в следующем уроке он уже точнее. Чем больше учишься — тем умнее становится система.", result: "С каждым уроком платформа учит тебя всё эффективнее" },
 ];
 
 const sectionWrap: React.CSSProperties = { padding: "40px 24px", maxWidth: 1060, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 };
@@ -191,20 +191,20 @@ export default function Landing() {
 
       <div style={sectionWrap}>
         <Tag color={C.gold}>Наука внутри</Tag>
-        <H2>Что стоит за платформой — в цифрах</H2>
-        <p style={{ textAlign: "center", fontSize: 16, color: C.muted, lineHeight: 1.6, maxWidth: 520, margin: "0 auto 28px" }}>Мы взяли проверенные научные теории и встроили их в каждую механику платформы.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 14 }}>
+        <H2>Почему здесь ты запомнишь больше</H2>
+        <p style={{ textAlign: "center", fontSize: 16, color: "#b0b0c0", lineHeight: 1.6, maxWidth: 600, margin: "0 auto 32px" }}>Каждая механика платформы основана на науке об обучении. Вот что это значит для тебя.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 18 }}>
           {scienceBlocks.map((b, i) => (
-            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "24px 22px" }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 42, fontWeight: 900, letterSpacing: "-1px", color: b.color, marginBottom: 8, lineHeight: 1.1 }}>{b.digit}</div>
-              <div style={{ fontSize: 17, fontWeight: 700, color: b.color, marginBottom: 8 }}>{b.title}</div>
-              <div style={{ fontSize: 15, color: C.text, lineHeight: 1.65, opacity: 0.9 }}>{b.text}</div>
-              <div style={{ marginTop: 12, padding: "8px 14px", borderRadius: 8, borderLeft: `3px solid ${b.color}`, background: `${b.color}06`, fontSize: 15, color: C.muted }}>{b.badge}</div>
+            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, padding: "30px 26px", display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 44, fontWeight: 900, lineHeight: 1, letterSpacing: "-1px", background: `linear-gradient(135deg, ${C.cyan}, ${C.purple}, ${C.cyan})`, backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 4s linear infinite" }}>{b.digit}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: C.text, lineHeight: 1.3 }}>{b.title}</div>
+              <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.7 }}>{b.text}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: C.cyan, paddingTop: 10, borderTop: `1px solid ${C.border}`, lineHeight: 1.5 }}>→ {b.result}</div>
             </div>
           ))}
         </div>
-        <p style={{ textAlign: "center", marginTop: 24, fontSize: 16, fontWeight: 500, color: C.text, lineHeight: 1.6 }}>
-          Всё это работает вместе — и на бесплатном уроке ты увидишь каждую из этих механик <span style={{ color: C.cyan }}>в действии</span>.
+        <p style={{ textAlign: "center", marginTop: 32, fontSize: 17, fontWeight: 500, color: C.text, lineHeight: 1.6 }}>
+          На бесплатном уроке ты увидишь каждую из этих механик <span style={{ background: `linear-gradient(90deg, ${C.cyan}, ${C.purple})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 700 }}>в действии</span>.
         </p>
       </div><SectionDiv/>
 
