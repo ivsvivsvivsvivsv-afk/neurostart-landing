@@ -1,12 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const C = {
-  bg: "#050508", card: "#0a0a10", border: "#1a1a2e",
-  cyan: "#00d4ff", cyanDk: "#0099bb", purple: "#8b5cf6",
-  gold: "#fbbf24", pink: "#ff4d8d", green: "#34d399",
-  text: "#e0e0e8", muted: "#6b6b80", dim: "#3a3a50",
+const themes = {
+  dark: {
+    bg: "#050508", card: "#0a0a10", border: "#1a1a2e",
+    cyan: "#00d4ff", cyanDk: "#0099bb", purple: "#8b5cf6",
+    gold: "#fbbf24", pink: "#ff4d8d", green: "#34d399",
+    text: "#e0e0e8", muted: "#b0b0c0", dim: "#3a3a50",
+    cardShadow: "none",
+    bgGlow1: "#00d4ff05", bgGlow2: "#8b5cf605",
+  },
+  light: {
+    bg: "#FAFBFC", card: "#FFFFFF", border: "#E2E5EA",
+    cyan: "#0891B2", cyanDk: "#0E7490", purple: "#7C3AED",
+    gold: "#D97706", pink: "#DB2777", green: "#059669",
+    text: "#1A1A2E", muted: "#5A5A72", dim: "#9A9AB0",
+    cardShadow: "0 2px 12px rgba(0,0,0,0.04)",
+    bgGlow1: "#0891B206", bgGlow2: "#7C3AED04",
+  },
 };
+
+type ThemeName = "dark" | "light";
+type ThemeColors = (typeof themes)[ThemeName];
 
 const testQuestions = [
   { q: "Как часто ты используешь нейросети?", opts: ["Никогда не пробовал", "Пару раз из любопытства", "Несколько раз в неделю", "Каждый день, для работы"] },
@@ -27,17 +42,17 @@ const testLevels = [
 
 const getTestLevel = (score: number) => testLevels.find(l => score >= l.min && score <= l.max) || testLevels[0];
 
-const BrainIcon = ({ color = C.cyan, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2a5 5 0 00-4.5 7.2A5 5 0 004 14a5 5 0 003.5 4.8A3 3 0 0012 22a3 3 0 004.5-3.2A5 5 0 0020 14a5 5 0 00-3.5-4.8A5 5 0 0012 2z"/><path d="M12 2v20" strokeDasharray="2 3" opacity="0.5"/></svg>);
-const SparkIcon = ({ color = C.gold, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>);
-const GameIcon = ({ color = C.pink, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="4" y1="12" x2="8" y2="12"/><circle cx="16" cy="10" r="1" fill={color}/><circle cx="19" cy="12" r="1" fill={color}/></svg>);
-const UserIcon = ({ color = C.cyan, size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
+const BrainIcon = ({ color = "#00d4ff", size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M12 2a5 5 0 00-4.5 7.2A5 5 0 004 14a5 5 0 003.5 4.8A3 3 0 0012 22a3 3 0 004.5-3.2A5 5 0 0020 14a5 5 0 00-3.5-4.8A5 5 0 0012 2z"/><path d="M12 2v20" strokeDasharray="2 3" opacity="0.5"/></svg>);
+const SparkIcon = ({ color = "#fbbf24", size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>);
+const GameIcon = ({ color = "#ff4d8d", size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="6" width="20" height="12" rx="3"/><line x1="6" y1="10" x2="6" y2="14"/><line x1="4" y1="12" x2="8" y2="12"/><circle cx="16" cy="10" r="1" fill={color}/><circle cx="19" cy="12" r="1" fill={color}/></svg>);
+const UserIcon = ({ color = "#00d4ff", size = 22 }: { color?: string; size?: number }) => (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>);
 
-const SectionDiv = () => (<div style={{ display:"flex",alignItems:"center",justifyContent:"center",padding:"44px 0",gap:12, position:"relative", zIndex:1 }}><div style={{ width:50,height:1,background:`linear-gradient(90deg,transparent,${C.cyan}25)` }}/><div style={{ width:4,height:4,borderRadius:"50%",background:C.cyan,opacity:.25 }}/><div style={{ width:50,height:1,background:`linear-gradient(90deg,${C.cyan}25,transparent)` }}/></div>);
-const Tag = ({ children, color = C.cyan }: { children: React.ReactNode; color?: string }) => (<div style={{ fontFamily:"'Orbitron',sans-serif",fontSize:10,color,letterSpacing:3,textTransform:"uppercase",marginBottom:14,textAlign:"center" }}>{children}</div>);
-const H2 = ({ children }: { children: React.ReactNode }) => (<h2 style={{ fontFamily:"'Orbitron',sans-serif",fontSize:"clamp(19px,4.5vw,27px)",fontWeight:800,textAlign:"center",marginBottom:14,lineHeight:1.3,color:C.text }}>{children}</h2>);
-const CTABtn = ({ children, big, onClick }: { children: React.ReactNode; big?: boolean; onClick?: () => void }) => (<button onClick={onClick} style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",padding:big?"16px 40px":"14px 30px",borderRadius:14,border:"none",background:`linear-gradient(135deg,${C.cyan},${C.cyanDk})`,color:"#000",fontFamily:"'Orbitron',sans-serif",fontSize:big?13:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",cursor:"pointer",boxShadow:`0 0 24px ${C.cyan}20,0 4px 16px rgba(0,0,0,0.3)` }}>{children}</button>);
+const SectionDiv = ({ C }: { C: ThemeColors }) => (<div style={{ display:"flex",alignItems:"center",justifyContent:"center",padding:"44px 0",gap:12, position:"relative", zIndex:1 }}><div style={{ width:50,height:1,background:`linear-gradient(90deg,transparent,${C.cyan}25)` }}/><div style={{ width:4,height:4,borderRadius:"50%",background:C.cyan,opacity:.25 }}/><div style={{ width:50,height:1,background:`linear-gradient(90deg,${C.cyan}25,transparent)` }}/></div>);
+const Tag = ({ children, color, C }: { children: React.ReactNode; color?: string; C: ThemeColors }) => (<div style={{ fontFamily:"'Orbitron',sans-serif",fontSize:10,color: color ?? C.cyan,letterSpacing:3,textTransform:"uppercase",marginBottom:14,textAlign:"center" }}>{children}</div>);
+const H2 = ({ children, C }: { children: React.ReactNode; C: ThemeColors }) => (<h2 style={{ fontFamily:"'Orbitron',sans-serif",fontSize:"clamp(19px,4.5vw,27px)",fontWeight:800,textAlign:"center",marginBottom:14,lineHeight:1.3,color:C.text }}>{children}</h2>);
+const CTABtn = ({ children, big, onClick, C, theme }: { children: React.ReactNode; big?: boolean; onClick?: () => void; C: ThemeColors; theme: ThemeName }) => (<button onClick={onClick} style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",padding:big?"16px 40px":"14px 30px",borderRadius:14,border:"none",background:`linear-gradient(135deg,${C.cyan},${C.cyanDk})`,color: theme === "dark" ? "#000" : "#fff",fontFamily:"'Orbitron',sans-serif",fontSize:big?13:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",cursor:"pointer",boxShadow:`0 0 24px ${C.cyan}20,0 4px 16px rgba(0,0,0,0.3)` }}>{children}</button>);
 
-const Timer = () => {
+const Timer = ({ C }: { C: ThemeColors }) => {
   const target = new Date("2026-04-14T19:00:00+03:00").getTime();
   const [diff, setDiff] = useState(target - Date.now());
   useEffect(() => {
@@ -58,7 +73,7 @@ const Timer = () => {
     </div>
   );
   return (
-    <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+    <div className="nu-timer-row" style={{ display: "flex", gap: 8, justifyContent: "center", alignItems: "flex-start" }}>
       <B v={d} l="дни" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
       <B v={h} l="часы" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
       <B v={m} l="мин" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
@@ -67,7 +82,8 @@ const Timer = () => {
   );
 };
 
-const LeadModal = ({ open, onClose, testResult }: { open: boolean; onClose: () => void; testResult?: { score: number; level: string; answers: number[] } }) => {
+const LeadModal = ({ open, onClose, testResult, theme = "dark" }: { open: boolean; onClose: () => void; testResult?: { score: number; level: string; answers: number[] }; theme?: ThemeName }) => {
+  const C = themes[theme];
   const [name,setName]=useState("");const [email,setEmail]=useState("");const [phone,setPhone]=useState("");const [sent,setSent]=useState(false);const [loading,setLoading]=useState(false);
   const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 
@@ -107,14 +123,26 @@ const LeadModal = ({ open, onClose, testResult }: { open: boolean; onClose: () =
   };
 
   if(!open) return null;
-  const inp:React.CSSProperties = {width:"100%",padding:"12px 14px",borderRadius:10,border:`1px solid ${C.border}`,background:"#111118",color:C.text,fontSize:14,fontFamily:"Inter,sans-serif",outline:"none"};
+  const inp:React.CSSProperties = {
+    width:"100%",padding:"12px 14px",borderRadius:10,
+    border: theme === "dark" ? "1px solid #1a1a2e" : "1px solid #E2E5EA",
+    background: theme === "dark" ? "#111118" : "#F3F4F6",
+    color: theme === "dark" ? "#e0e0e8" : "#1A1A2E",
+    fontSize:14,fontFamily:"Inter,sans-serif",outline:"none"
+  };
   const errBox = { fontSize: 12, color: "#ff4d8d", marginTop: 4 } as const;
+  const overlayBg = theme === "dark" ? "rgba(0,0,0,0.85)" : "rgba(0,0,0,0.5)";
+  const cardBg = theme === "dark" ? "#0a0a10" : "#FFFFFF";
+  const cardBorder = theme === "dark" ? "1px solid #1a1a2e" : "1px solid #E2E5EA";
+  const titleColor = theme === "dark" ? "#e0e0e8" : "#1A1A2E";
+  const subColor = theme === "dark" ? "#b0b0c0" : "#5A5A72";
+  const btnText = theme === "dark" ? "#000" : "#fff";
 
   return (
-    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:100,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
-      <div onClick={e=>e.stopPropagation()} style={{background:C.card,border:`1px solid ${C.border}`,borderRadius:18,padding:"32px 24px",maxWidth:400,width:"100%",position:"relative"}}>
+    <div onClick={onClose} style={{position:"fixed",inset:0,zIndex:100,background:overlayBg,backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:cardBg,border:cardBorder,borderRadius:18,padding:"32px 24px",maxWidth:400,width:"100%",position:"relative"}}>
         <button onClick={onClose} style={{position:"absolute",top:14,right:14,background:"none",border:"none",color:C.dim,fontSize:20,cursor:"pointer"}}>✕</button>
-        {!sent?(<><div style={{fontFamily:"'Orbitron'",fontSize:16,fontWeight:700,color:C.text,marginBottom:6}}>Записаться на урок</div><div style={{fontSize:12,color:C.muted,marginBottom:20}}>Бесплатно. Мы свяжемся и пришлём ссылку.</div><div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:20}}><input style={inp} placeholder="Имя" value={name} onChange={e=>setName(e.target.value)}/><div><input style={inp} placeholder="Email" type="email" value={email} onChange={e=>{ setEmail(e.target.value); setErrors(p=>({ ...p, email: undefined })); }}/>{errors.email && <div style={errBox}>{errors.email}</div>}</div><div><input style={inp} placeholder="Телефон (необязательно)" value={phone} onChange={e=>{ setPhone(e.target.value); setErrors(p=>({ ...p, phone: undefined })); }}/>{errors.phone && <div style={errBox}>{errors.phone}</div>}</div></div><button onClick={submit} disabled={loading} style={{width:"100%",padding:"14px",borderRadius:12,border:"none",background:`linear-gradient(135deg,${C.cyan},${C.cyanDk})`,color:"#000",fontFamily:"'Orbitron'",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:"uppercase",cursor:loading?"wait":"pointer",opacity:loading?0.7:1}}>{loading?"Отправка...":"Отправить заявку"}</button></>):(<div style={{textAlign:"center",padding:"20px 0"}}><div style={{fontSize:40,marginBottom:12}}>✓</div><div style={{fontFamily:"'Orbitron'",fontSize:15,fontWeight:700,color:C.green,marginBottom:8}}>Заявка отправлена!</div><div style={{fontSize:13,color:C.muted}}>Мы свяжемся с тобой и пришлём ссылку на урок.</div></div>)}
+        {!sent?(<><div style={{fontFamily:"'Orbitron'",fontSize:16,fontWeight:700,color:titleColor,marginBottom:6}}>Записаться на урок</div><div style={{fontSize:12,color:subColor,marginBottom:20}}>Бесплатно. Мы свяжемся и пришлём ссылку.</div><div style={{display:"flex",flexDirection:"column",gap:12,marginBottom:20}}><input style={inp} placeholder="Имя" value={name} onChange={e=>setName(e.target.value)}/><div><input style={inp} placeholder="Email" type="email" value={email} onChange={e=>{ setEmail(e.target.value); setErrors(p=>({ ...p, email: undefined })); }}/>{errors.email && <div style={errBox}>{errors.email}</div>}</div><div><input style={inp} placeholder="Телефон (необязательно)" value={phone} onChange={e=>{ setPhone(e.target.value); setErrors(p=>({ ...p, phone: undefined })); }}/>{errors.phone && <div style={errBox}>{errors.phone}</div>}</div></div><button onClick={submit} disabled={loading} style={{width:"100%",padding:"14px",borderRadius:12,border:"none",background:`linear-gradient(135deg,${C.cyan},${C.cyanDk})`,color:btnText,fontFamily:"'Orbitron'",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:"uppercase",cursor:loading?"wait":"pointer",opacity:loading?0.7:1}}>{loading?"Отправка...":"Отправить заявку"}</button></>):(<div style={{textAlign:"center",padding:"20px 0"}}><div style={{fontSize:40,marginBottom:12}}>✓</div><div style={{fontFamily:"'Orbitron'",fontSize:15,fontWeight:700,color:C.green,marginBottom:8}}>Заявка отправлена!</div><div style={{fontSize:13,color:subColor}}>Мы свяжемся с тобой и пришлём ссылку на урок.</div></div>)}
       </div>
     </div>
   );
@@ -131,7 +159,7 @@ const scienceBlocks = [
 
 const sectionWrap: React.CSSProperties = { padding: "40px 24px", maxWidth: 1060, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 };
 
-const lessonCards = [
+const getLessonCards = (C: ThemeColors) => [
   { emoji: "👨‍🏫", color: C.green, title: "Живой преподаватель", text: "Объясняет, отвечает на вопросы, ведёт по платформе в реальном времени" },
   { emoji: "🤖", color: C.purple, title: "AI-тьютор в чате", text: "Персональный помощник — знает тему урока и подстраивается под тебя" },
   { emoji: "🎮", color: C.pink, title: "Мини-игра", text: "Собирай полезные принципы промптинга, уворачивайся от ловушек" },
@@ -141,10 +169,15 @@ const lessonCards = [
 ];
 
 export default function Landing() {
+  const [theme, setTheme] = useState<ThemeName>("dark");
+  const C = themes[theme];
+
   const [sy,setSy]=useState(0);const [showForm,setShowForm]=useState(false);
   const [testStep, setTestStep] = useState(0);
   const [testAnswers, setTestAnswers] = useState<number[]>([]);
   const [testDone, setTestDone] = useState(false);
+
+  const lessonCards = getLessonCards(C);
 
   useEffect(()=>{const f=()=>setSy(window.scrollY);window.addEventListener("scroll",f);return()=>window.removeEventListener("scroll",f)},[]);
   const openForm=()=>setShowForm(true);
@@ -159,27 +192,88 @@ export default function Landing() {
   const testScore = testAnswers.reduce((a, b) => a + b, 0);
   const testLevelNow = getTestLevel(testScore);
 
+  const matrixFill = theme === "dark" ? "#00d4ff" : C.cyan;
+
   return (
     <div style={{minHeight:"100vh",background:C.bg,color:C.text,fontFamily:"'Inter','Segoe UI',sans-serif",overflowX:"hidden",position:"relative"}}>
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 20% 50%, #00d4ff06 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, #8b5cf606 0%, transparent 50%), radial-gradient(ellipse at 50% 80%, #ff4d8d04 0%, transparent 50%)" }} />
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ctext x='30' y='35' text-anchor='middle' font-size='14' fill='%2300d4ff' opacity='0.04' font-family='monospace'%3E01%3C/text%3E%3C/svg%3E")`,
-          backgroundSize: "60px 60px",
-        }} />
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2} 0%, transparent 50%)` }} />
+        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 1 : 0.4 }}>
+          <defs>
+            <style>{`
+              @keyframes fall {
+                0% { transform: translateY(-100vh); opacity: 0; }
+                10% { opacity: 0.15; }
+                90% { opacity: 0.15; }
+                100% { transform: translateY(100vh); opacity: 0; }
+              }
+              .matrix-col text {
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                fill: ${matrixFill};
+                opacity: 0;
+              }
+            `}</style>
+          </defs>
+          {Array.from({ length: 25 }).map((_, col) => (
+            <g key={col} className="matrix-col" style={{ animation: `fall ${8 + Math.random() * 12}s linear ${Math.random() * 10}s infinite` }}>
+              {Array.from({ length: 12 }).map((_, row) => (
+                <text key={row} x={`${col * (100 / 25)}%`} y={row * 60} style={{ animationDelay: `${Math.random() * 5}s` }}>
+                  {String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96))}
+                </text>
+              ))}
+            </g>
+          ))}
+        </svg>
       </div>
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg}}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}`}</style>
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg};transition:background 0.3s}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}@media (max-width:640px){.nu-author-card{flex-direction:column!important;align-items:stretch!important}.nu-author-photo{max-height:360px!important;flex:none!important;width:100%!important;align-self:stretch!important}.nu-timer-row{flex-wrap:wrap;gap:6px 8px!important;row-gap:10px!important;justify-content:center!important;padding:0 4px}}`}</style>
       <LeadModal
         open={showForm}
         onClose={() => setShowForm(false)}
         testResult={testDone ? { score: testScore, level: testLevelNow.name, answers: testAnswers } : undefined}
+        theme={theme}
       />
-      <header style={{position:"fixed",top:0,left:0,right:0,zIndex:50,padding:"12px 20px",display:"flex",justifyContent:"space-between",alignItems:"center",background:sy>50?`${C.bg}ee`:"transparent",backdropFilter:sy>50?"blur(12px)":"none",borderBottom:sy>50?`1px solid ${C.border}`:"1px solid transparent",transition:"all .3s"}}>
-        <div style={{fontFamily:"'Orbitron'",fontSize:12,fontWeight:800,color:C.cyan,letterSpacing:3}}>НЕЙРО-ЮНИТ</div>
-        <div style={{fontSize:9,color:C.muted,fontFamily:"'Orbitron'",letterSpacing:1}}>БЕСПЛАТНЫЙ УРОК</div>
+      <header style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 50,
+        padding: "12px 20px",
+        paddingTop: "max(12px, env(safe-area-inset-top))",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        background: sy > 50 ? `${C.bg}ee` : "transparent",
+        backdropFilter: sy > 50 ? "blur(12px)" : "none",
+        borderBottom: sy > 50 ? `1px solid ${C.border}` : "1px solid transparent",
+        transition: "all .3s",
+      }}>
+        <div style={{ fontFamily: "'Orbitron'", fontSize: 12, fontWeight: 800, color: C.cyan, letterSpacing: 3 }}>НЕЙРО-ЮНИТ</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button
+            type="button"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: theme === "dark" ? "#1a1a2e" : "#E2E5EA",
+              border: "none", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 18, transition: "all 0.3s",
+            }}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+          <button
+            type="button"
+            onClick={openForm}
+            style={{
+              padding: "8px 18px", borderRadius: 8,
+              background: `linear-gradient(135deg, ${C.cyan}, ${C.cyanDk})`,
+              color: theme === "dark" ? "#000" : "#fff",
+              fontFamily: "'Orbitron'", fontSize: 10, fontWeight: 700,
+              letterSpacing: 1, border: "none", cursor: "pointer",
+              textTransform: "uppercase",
+            }}
+          >
+            ЗАПИСАТЬСЯ
+          </button>
+        </div>
       </header>
 
       <section style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:"100px 24px 60px"}}>
@@ -190,20 +284,20 @@ export default function Landing() {
           <div style={{display:"flex",gap:10,marginBottom:32,flexWrap:"wrap",justifyContent:"center",animation:"fadeUp .7s ease .5s both"}}>
             {[{icon:<BrainIcon color={C.cyan} size={20}/>,label:"Наука внутри",color:C.cyan},{icon:<GameIcon color={C.pink} size={20}/>,label:"Геймификация",color:C.pink},{icon:<UserIcon color={C.green} size={20}/>,label:"Живой педагог",color:C.green}].map((p,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"10px 18px",borderRadius:10,border:`1px solid ${p.color}18`,background:`${p.color}06`}}>{p.icon}<span style={{fontSize:14,color:p.color,fontWeight:600}}>{p.label}</span></div>))}
           </div>
-          <div style={{animation:"fadeUp .8s ease .6s both",display:"flex",flexDirection:"column",alignItems:"center",gap:10}}><CTABtn big onClick={openForm}>Записаться бесплатно</CTABtn><span style={{fontSize:10,color:C.dim}}>60 мин • без оплаты • без предварительных знаний</span></div>
+          <div style={{animation:"fadeUp .8s ease .6s both",display:"flex",flexDirection:"column",alignItems:"center",gap:10}}><CTABtn big onClick={openForm} C={C} theme={theme}>Записаться бесплатно</CTABtn><span style={{fontSize:10,color:C.dim}}>60 мин • без оплаты • без предварительных знаний</span></div>
         </div>
       </section>
 
       <div style={sectionWrap}>
-        <Tag color={C.gold}>Наука внутри</Tag>
-        <H2>Почему здесь ты запомнишь больше</H2>
-        <p style={{ textAlign: "center", fontSize: 16, color: "#b0b0c0", lineHeight: 1.6, maxWidth: 600, margin: "0 auto 32px" }}>Каждая механика платформы основана на науке об обучении. Вот что это значит для тебя.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 18 }}>
+        <Tag color={C.gold} C={C}>Наука внутри</Tag>
+        <H2 C={C}>Почему здесь ты запомнишь больше</H2>
+        <p style={{ textAlign: "center", fontSize: 16, color: C.muted, lineHeight: 1.6, maxWidth: 600, margin: "0 auto 32px" }}>Каждая механика платформы основана на науке об обучении. Вот что это значит для тебя.</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 18 }}>
           {scienceBlocks.map((b, i) => (
-            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, padding: "30px 26px", display: "flex", flexDirection: "column", gap: 14 }}>
+            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, padding: "30px 26px", display: "flex", flexDirection: "column", gap: 14, boxShadow: C.cardShadow }}>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 44, fontWeight: 900, lineHeight: 1, letterSpacing: "-1px", background: `linear-gradient(135deg, ${C.cyan}, ${C.purple}, ${C.cyan})`, backgroundSize: "200% auto", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", animation: "shimmer 4s linear infinite" }}>{b.digit}</div>
               <div style={{ fontSize: 18, fontWeight: 700, color: C.text, lineHeight: 1.3 }}>{b.title}</div>
-              <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.7 }}>{b.text}</div>
+              <div style={{ fontSize: 15, color: C.muted, lineHeight: 1.7 }}>{b.text}</div>
               <div style={{ fontSize: 14, fontWeight: 600, color: C.cyan, paddingTop: 10, borderTop: `1px solid ${C.border}`, lineHeight: 1.5 }}>→ {b.result}</div>
             </div>
           ))}
@@ -211,11 +305,11 @@ export default function Landing() {
         <p style={{ textAlign: "center", marginTop: 32, fontSize: 17, fontWeight: 500, color: C.text, lineHeight: 1.6 }}>
           На бесплатном уроке ты увидишь каждую из этих механик <span style={{ background: `linear-gradient(90deg, ${C.cyan}, ${C.purple})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", fontWeight: 700 }}>в действии</span>.
         </p>
-      </div><SectionDiv/>
+      </div><SectionDiv C={C}/>
 
       <div style={sectionWrap}>
-        <Tag color={C.cyan}>Проверь себя</Tag>
-        <H2>Узнай свой уровень в ИИ</H2>
+        <Tag color={C.cyan} C={C}>Проверь себя</Tag>
+        <H2 C={C}>Узнай свой уровень в ИИ</H2>
         <p style={{ textAlign: "center", fontSize: 16, color: C.muted, marginBottom: 24 }}>7 вопросов • 1 минута • без регистрации</p>
 
         <div style={{ width: "100%", height: 4, background: C.border, borderRadius: 2, marginBottom: 24 }}>
@@ -223,7 +317,7 @@ export default function Landing() {
         </div>
 
         {!testDone ? (
-          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, padding: "28px 24px" }}>
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 18, padding: "28px 24px", boxShadow: C.cardShadow }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
               <span style={{ fontFamily: "'Orbitron'", fontSize: 12, color: C.cyan }}>ВОПРОС {testStep + 1} / {testQuestions.length}</span>
               <span style={{ fontSize: 13, color: C.dim }}>{testScore} баллов</span>
@@ -237,7 +331,7 @@ export default function Landing() {
                   fontFamily: "Inter, sans-serif", cursor: "pointer", textAlign: "left", transition: "all 0.2s",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${C.cyan}60`; e.currentTarget.style.background = `${C.cyan}08`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = "transparent"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = theme === "dark" ? "" : C.card; }}
                 >
                   <span style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0, border: `1px solid ${C.cyan}50`, background: `${C.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Orbitron'", fontSize: 13, fontWeight: 700, color: C.cyan }}>
                     {String.fromCharCode(65 + j)}
@@ -248,7 +342,7 @@ export default function Landing() {
             </div>
           </div>
         ) : (
-          <div style={{ background: `linear-gradient(135deg, ${C.card}, ${testLevelNow.color}08)`, border: `1px solid ${testLevelNow.color}25`, borderRadius: 18, padding: "36px 28px", textAlign: "center" }}>
+          <div style={{ background: `linear-gradient(135deg, ${C.card}, ${testLevelNow.color}08)`, border: `1px solid ${testLevelNow.color}25`, borderRadius: 18, padding: "36px 28px", textAlign: "center", boxShadow: C.cardShadow }}>
             <div style={{ fontSize: 52, marginBottom: 12 }}>{testLevelNow.emoji}</div>
             <div style={{ fontFamily: "'Orbitron'", fontSize: 13, color: testLevelNow.color, letterSpacing: 2, textTransform: "uppercase", marginBottom: 6 }}>Твой уровень</div>
             <div style={{ fontFamily: "'Orbitron'", fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 8 }}>{testLevelNow.name}</div>
@@ -262,33 +356,33 @@ export default function Landing() {
                 <div style={{ width: `${(testScore / 21) * 100}%`, height: "100%", background: testLevelNow.color, borderRadius: 4 }} />
               </div>
             </div>
-            <CTABtn big onClick={openForm}>Записаться на урок</CTABtn>
+            <CTABtn big onClick={openForm} C={C} theme={theme}>Записаться на урок</CTABtn>
             <div style={{ marginTop: 10, fontSize: 12, color: C.dim }}>Результат теста отправим вместе с заявкой</div>
             <div style={{ marginTop: 16 }}>
               <button type="button" onClick={() => { setTestStep(0); setTestAnswers([]); setTestDone(false); }} style={{ background: "none", border: "none", color: C.muted, fontSize: 13, cursor: "pointer", textDecoration: "underline" }}>Пройти заново</button>
             </div>
           </div>
         )}
-      </div><SectionDiv/>
+      </div><SectionDiv C={C}/>
 
       <div style={sectionWrap}>
-        <Tag color={C.cyan}>На уроке</Tag><H2>Что тебя ждёт</H2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 10 }}>
+        <Tag color={C.cyan} C={C}>На уроке</Tag><H2 C={C}>Что тебя ждёт</H2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: 10 }}>
           {lessonCards.map((c, i) => (
-            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 14px" }}>
+            <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "16px 14px", boxShadow: C.cardShadow }}>
               <div style={{ fontSize: 32, marginBottom: 12 }}>{c.emoji}</div>
               <div style={{ fontSize: 17, fontWeight: 600, color: c.color, marginBottom: 4 }}>{c.title}</div>
-              <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.5 }}>{c.text}</div>
+              <div style={{ fontSize: 15, color: C.muted, lineHeight: 1.5 }}>{c.text}</div>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 16, padding: "12px 14px", background: `${C.gold}06`, borderRadius: 10, border: `1px solid ${C.gold}12`, textAlign: "center" }}><span style={{ fontSize: 15, color: C.gold }}><span style={{ fontWeight: 700 }}>Для кого:</span> абсолютные новички. Никаких знаний не нужно.</span></div>
-      </div><SectionDiv/>
+        <div style={{ marginTop: 16, padding: "12px 14px", background: `${C.gold}06`, borderRadius: 10, border: `1px solid ${C.gold}12`, textAlign: "center", boxShadow: C.cardShadow }}><span style={{ fontSize: 15, color: C.gold }}><span style={{ fontWeight: 700 }}>Для кого:</span> абсолютные новички. Никаких знаний не нужно.</span></div>
+      </div><SectionDiv C={C}/>
 
       <section style={{ padding: "40px 24px", maxWidth: 1060, margin: "0 auto", width: "100%", position: "relative", zIndex: 1 }}>
-        <Tag color={C.purple}>Кто ведёт</Tag>
-        <H2>Игорь Журкин</H2>
-        <div style={{
+        <Tag color={C.purple} C={C}>Кто ведёт</Tag>
+        <H2 C={C}>Игорь Журкин</H2>
+        <div className="nu-author-card" style={{
           background: C.card,
           border: `1px solid ${C.border}`,
           borderRadius: 20,
@@ -298,8 +392,9 @@ export default function Landing() {
           flexDirection: "row",
           flexWrap: "wrap",
           alignItems: "flex-start",
+          boxShadow: C.cardShadow,
         }}>
-          <div style={{
+          <div className="nu-author-photo" style={{
             flex: "0 0 280px",
             alignSelf: "stretch",
             position: "relative",
@@ -314,8 +409,8 @@ export default function Landing() {
             }} />
           </div>
 
-          <div style={{ flex: 1, minWidth: 280, paddingTop: 20, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
-            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: "#00d4ff", letterSpacing: 0, marginBottom: 20, lineHeight: 1.5 }}>
+          <div style={{ flex: "1 1 280px", minWidth: 0, paddingTop: 20, paddingLeft: 28, paddingRight: 28, paddingBottom: 28 }}>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, color: C.cyan, letterSpacing: 0, marginBottom: 20, lineHeight: 1.5 }}>
               Основатель НЕЙРО-ЮНИТ • 20 лет в IT • 3 года внедряет ИИ в бизнес • учёный-практик
             </div>
 
@@ -331,22 +426,22 @@ export default function Landing() {
                   <span style={{ fontSize: 22, flexShrink: 0, alignSelf: "flex-start", marginTop: 3 }}>{item.emoji}</span>
                   <div>
                     <div style={{ fontSize: 17, fontWeight: 600, color: C.text, marginBottom: 2 }}>{item.title}</div>
-                    <div style={{ fontSize: 15, color: "#b0b0c0", lineHeight: 1.5 }}>{item.text}</div>
+                    <div style={{ fontSize: 15, color: C.muted, lineHeight: 1.5 }}>{item.text}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
-      </section><SectionDiv/>
+      </section><SectionDiv C={C}/>
 
       <div style={{ ...sectionWrap, padding: "50px 24px 36px", textAlign: "center" }}>
-        <Tag color={C.gold}>Старт через</Tag>
-        <H2>Вторник, 14 апреля 2026 — 19:00 МСК</H2>
-        <Timer/>
-        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: "#b0b0c0", marginTop: 26, marginBottom: 12, lineHeight: 1.5, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>Приходи посмотреть, как это устроено</p>
+        <Tag color={C.gold} C={C}>Старт через</Tag>
+        <H2 C={C}>Вторник, 14 апреля 2026 — 19:00 МСК</H2>
+        <Timer C={C}/>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 16, color: C.muted, marginTop: 26, marginBottom: 12, lineHeight: 1.5, maxWidth: 520, marginLeft: "auto", marginRight: "auto" }}>Приходи посмотреть, как это устроено</p>
         <p style={{fontSize:16,color:C.muted,lineHeight:1.6,marginBottom:26,maxWidth:400,margin:"0 auto 26px"}}>60 минут. Бесплатно. Живой преподаватель + AI-платформа. Никаких предварительных знаний.</p>
-        <CTABtn big onClick={openForm}>Записаться на урок</CTABtn>
+        <CTABtn big onClick={openForm} C={C} theme={theme}>Записаться на урок</CTABtn>
         <div style={{marginTop:14}}><span style={{fontSize:10,color:C.dim}}>Без оплаты • Без карты • Без спама</span></div>
       </div>
 
