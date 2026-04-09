@@ -46,10 +46,33 @@ const H2 = ({ children }: { children: React.ReactNode }) => (<h2 style={{ fontFa
 const CTABtn = ({ children, big, onClick }: { children: React.ReactNode; big?: boolean; onClick?: () => void }) => (<button onClick={onClick} style={{ display:"inline-flex",alignItems:"center",justifyContent:"center",padding:big?"16px 40px":"14px 30px",borderRadius:14,border:"none",background:`linear-gradient(135deg,${C.cyan},${C.cyanDk})`,color:"#000",fontFamily:"'Orbitron',sans-serif",fontSize:big?13:11,fontWeight:700,letterSpacing:2,textTransform:"uppercase",cursor:"pointer",boxShadow:`0 0 24px ${C.cyan}20,0 4px 16px rgba(0,0,0,0.3)` }}>{children}</button>);
 
 const Timer = () => {
-  const [t, setT] = useState({ d:2,h:14,m:37,s:52 });
-  useEffect(() => { const i = setInterval(() => setT(p => { let{d,h,m,s}=p;s--;if(s<0){s=59;m--}if(m<0){m=59;h--}if(h<0){h=23;d--}if(d<0)return{d:0,h:0,m:0,s:0};return{d,h,m,s} }),1000); return()=>clearInterval(i) },[]);
-  const B = ({v,l}:{v:number;l:string}) => (<div style={{textAlign:"center"}}><div style={{fontFamily:"'Orbitron'",fontSize:22,fontWeight:700,color:C.cyan,background:`${C.cyan}08`,border:`1px solid ${C.cyan}15`,borderRadius:8,padding:"4px 10px",minWidth:44}}>{String(v).padStart(2,"0")}</div><div style={{fontSize:8,color:C.dim,marginTop:3,letterSpacing:1,textTransform:"uppercase"}}>{l}</div></div>);
-  return (<div style={{display:"flex",gap:8,justifyContent:"center"}}><B v={t.d} l="дни"/><span style={{fontFamily:"'Orbitron'",fontSize:18,color:`${C.cyan}25`,paddingTop:4}}>:</span><B v={t.h} l="часы"/><span style={{fontFamily:"'Orbitron'",fontSize:18,color:`${C.cyan}25`,paddingTop:4}}>:</span><B v={t.m} l="мин"/><span style={{fontFamily:"'Orbitron'",fontSize:18,color:`${C.cyan}25`,paddingTop:4}}>:</span><B v={t.s} l="сек"/></div>);
+  const target = new Date("2026-04-14T19:00:00+03:00").getTime();
+  const [diff, setDiff] = useState(target - Date.now());
+  useEffect(() => {
+    const i = setInterval(() => setDiff(target - Date.now()), 1000);
+    return () => clearInterval(i);
+  }, [target]);
+
+  const totalSec = Math.max(0, Math.floor(diff / 1000));
+  const d = Math.floor(totalSec / 86400);
+  const h = Math.floor((totalSec % 86400) / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+
+  const B = ({ v, l }: { v: number; l: string }) => (
+    <div style={{ textAlign: "center" }}>
+      <div style={{ fontFamily: "'Orbitron'", fontSize: 22, fontWeight: 700, color: C.cyan, background: `${C.cyan}08`, border: `1px solid ${C.cyan}15`, borderRadius: 8, padding: "4px 10px", minWidth: 44 }}>{String(v).padStart(2, "0")}</div>
+      <div style={{ fontSize: 8, color: C.dim, marginTop: 3, letterSpacing: 1, textTransform: "uppercase" }}>{l}</div>
+    </div>
+  );
+  return (
+    <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+      <B v={d} l="дни" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
+      <B v={h} l="часы" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
+      <B v={m} l="мин" /><span style={{ fontFamily: "'Orbitron'", fontSize: 18, color: `${C.cyan}25`, paddingTop: 4 }}>:</span>
+      <B v={s} l="сек" />
+    </div>
+  );
 };
 
 const LeadModal = ({ open, onClose, testResult }: { open: boolean; onClose: () => void; testResult?: { score: number; level: string; answers: number[] } }) => {
@@ -274,7 +297,11 @@ export default function Landing() {
       </section><SectionDiv/>
 
       <section className="nu-sec" style={{...sec,padding:"50px 24px 36px",textAlign:"center"}}>
-        <Tag color={C.gold}>Старт через</Tag><Timer/>
+        <Tag color={C.gold}>Старт через</Tag>
+        <div style={{ fontFamily: "'Orbitron'", fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 12 }}>
+          Вторник, 14 апреля 2026 — 19:00 МСК
+        </div>
+        <Timer/>
         <h2 style={{fontFamily:"'Orbitron'",fontSize:"clamp(19px,4.5vw,28px)",fontWeight:800,marginTop:26,marginBottom:12,lineHeight:1.25}}><span style={{color:C.text}}>Приходи посмотреть, </span><span style={{color:C.cyan}}>как это устроено</span></h2>
         <p style={{fontSize:15,color:C.muted,lineHeight:1.6,marginBottom:26,maxWidth:400,margin:"0 auto 26px"}}>60 минут. Бесплатно. Живой преподаватель + AI-платформа. Никаких предварительных знаний.</p>
         <CTABtn big onClick={openForm}>Записаться на урок</CTABtn>
