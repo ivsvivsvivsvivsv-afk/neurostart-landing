@@ -194,15 +194,15 @@ export default function Landing() {
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || theme !== "dark") return;
     const canvas = matrixRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const fontSize = 14;
-    /** ~3× медленнее целочисленного шага раз в кадр — плавное, неторопливое падение */
-    const fallSpeed = 1 / 3;
+    const fontSize = 28;
+    /** Дробный шаг: в 2× медленнее прежнего (1/3 → 1/6) */
+    const fallSpeed = 1 / 6;
     const chars =
       "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789";
     const drops: number[] = [];
@@ -227,9 +227,9 @@ export default function Landing() {
 
     let animId = 0;
     const draw = () => {
-      ctx.fillStyle = theme === "dark" ? "rgba(5, 5, 8, 0.08)" : "rgba(250, 251, 252, 0.08)";
+      ctx.fillStyle = "rgba(5, 5, 8, 0.08)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = theme === "dark" ? "#00d4ff" : "#0891B2";
+      ctx.fillStyle = "#00d4ff";
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
@@ -271,7 +271,9 @@ export default function Landing() {
       {mounted && (
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1 || (theme === "dark" ? "#00d4ff05" : "#0891B206")} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2 || (theme === "dark" ? "#8b5cf605" : "#7C3AED04")} 0%, transparent 50%)` }} />
-        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.24 : 0.1 }} />
+        {theme === "dark" && (
+          <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.24 }} />
+        )}
       </div>
       )}
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
