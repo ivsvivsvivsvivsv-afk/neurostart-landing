@@ -201,16 +201,26 @@ export default function Landing() {
     if (!ctx) return;
 
     const fontSize = 14;
+    /** ~3× медленнее целочисленного шага раз в кадр — плавное, неторопливое падение */
+    const fallSpeed = 1 / 3;
     const chars =
       "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789";
     const drops: number[] = [];
+    const lastIntRow: number[] = [];
+    const colChar: string[] = [];
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       const columns = Math.floor(canvas.width / fontSize);
       drops.length = columns;
-      for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+      lastIntRow.length = columns;
+      colChar.length = columns;
+      for (let i = 0; i < columns; i++) {
+        drops[i] = Math.random() * -100;
+        lastIntRow[i] = Math.floor(drops[i]);
+        colChar[i] = chars[Math.floor(Math.random() * chars.length)];
+      }
     };
     resize();
     window.addEventListener("resize", resize);
@@ -223,12 +233,16 @@ export default function Landing() {
       ctx.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
-        const char = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+        const ri = Math.floor(drops[i]);
+        if (ri !== lastIntRow[i]) {
+          lastIntRow[i] = ri;
+          colChar[i] = chars[Math.floor(Math.random() * chars.length)];
+        }
+        ctx.fillText(colChar[i], i * fontSize, drops[i] * fontSize);
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
-        drops[i]++;
+        drops[i] += fallSpeed;
       }
       animId = requestAnimationFrame(draw);
     };
@@ -257,7 +271,7 @@ export default function Landing() {
       {mounted && (
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1 || (theme === "dark" ? "#00d4ff05" : "#0891B206")} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2 || (theme === "dark" ? "#8b5cf605" : "#7C3AED04")} 0%, transparent 50%)` }} />
-        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.12 : 0.05 }} />
+        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.24 : 0.1 }} />
       </div>
       )}
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -363,9 +377,14 @@ export default function Landing() {
                   display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", borderRadius: 12,
                   background: "transparent", border: `1px solid ${C.border}`, color: C.text, fontSize: 15,
                   fontFamily: "Inter, sans-serif", cursor: "pointer", textAlign: "left", transition: "all 0.2s",
+                  WebkitAppearance: "none", appearance: "none",
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = `${C.cyan}60`; e.currentTarget.style.background = `${C.cyan}08`; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = theme === "dark" ? "" : C.card; }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = C.border;
+                  e.currentTarget.style.background = theme === "dark" ? "transparent" : C.card;
+                  e.currentTarget.style.color = C.text;
+                }}
                 >
                   <span style={{ width: 30, height: 30, borderRadius: 8, flexShrink: 0, border: `1px solid ${C.cyan}50`, background: `${C.cyan}15`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Orbitron'", fontSize: 13, fontWeight: 700, color: C.cyan }}>
                     {String.fromCharCode(65 + j)}
