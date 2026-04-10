@@ -200,65 +200,90 @@ export default function Landing() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // В светлой теме — очистить canvas и не запускать анимацию
+    if (theme !== "dark") {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
     let columns = 0;
     let drops: number[] = [];
+    let speeds: number[] = [];
+    const fontSize = 16;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const fontSize = 12;
       columns = Math.floor(canvas.width / fontSize);
-      drops = Array(columns).fill(0).map(() => Math.floor(Math.random() * -50));
+      drops = Array(columns).fill(0).map(() => Math.random() * canvas.height / fontSize * -1);
+      speeds = Array(columns).fill(0).map(() => 0.3 + Math.random() * 0.7);
     };
     resize();
     window.addEventListener("resize", resize);
 
-    const fontSize = 12;
     const chars =
-      "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789";
 
     let animId: number;
-    const draw = () => {
-      // Полупрозрачная заливка фоном — создаёт шлейф
-      ctx.fillStyle = theme === "dark" ? "rgba(5, 5, 8, 0.05)" : "rgba(250, 251, 252, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    let lastTime = 0;
+    const fps = 12;
+    const interval = 1000 / fps;
 
-      ctx.font = `${fontSize}px monospace`;
+    const draw = (timestamp: number) => {
+      animId = requestAnimationFrame(draw);
+      const delta = timestamp - lastTime;
+      if (delta < interval) return;
+      lastTime = timestamp - (delta % interval);
+
+      ctx.fillStyle = "rgba(5, 5, 8, 0.06)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.font = `${fontSize}px 'Courier New', monospace`;
 
       for (let i = 0; i < columns; i++) {
         const char = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
-        const y = drops[i] * fontSize;
+        const y = Math.floor(drops[i]) * fontSize;
 
-        // Яркий символ на конце — зелёный как в Матрице
-        const green = theme === "dark" ? "#00ff41" : "#15803d";
-        ctx.fillStyle = green;
-        ctx.globalAlpha = 0.8;
+        // Яркая голова
+        ctx.fillStyle = "#aaffaa";
+        ctx.globalAlpha = 0.9;
         ctx.fillText(char, x, y);
 
-        // Тусклый шлейф выше
-        if (drops[i] > 0) {
-          const trailChar = chars[Math.floor(Math.random() * chars.length)];
-          ctx.globalAlpha = 0.15;
-          ctx.fillText(trailChar, x, y - fontSize);
+        // Средний шлейф
+        for (let t = 1; t < 4; t++) {
+          const trailY = y - t * fontSize;
+          if (trailY < 0) break;
+          const tc = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillStyle = "#00ff41";
+          ctx.globalAlpha = 0.5 - t * 0.12;
+          ctx.fillText(tc, x, trailY);
+        }
+
+        // Дальний шлейф
+        for (let t = 4; t < 12; t++) {
+          const trailY = y - t * fontSize;
+          if (trailY < 0) break;
+          const tc = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillStyle = "#008f11";
+          ctx.globalAlpha = 0.2 - t * 0.015;
+          if (ctx.globalAlpha <= 0) break;
+          ctx.fillText(tc, x, trailY);
         }
 
         ctx.globalAlpha = 1;
+        drops[i] += speeds[i];
 
-        // Сброс колонки когда ушла за экран
-        if (y > canvas.height) {
-          if (Math.random() > 0.98) drops[i] = 0;
+        if (drops[i] * fontSize > canvas.height + 200) {
+          if (Math.random() > 0.95) {
+            drops[i] = Math.random() * -20;
+            speeds[i] = 0.3 + Math.random() * 0.7;
+          }
         }
-        drops[i]++;
       }
-      animId = requestAnimationFrame(draw);
     };
-    draw();
 
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
+    animId = requestAnimationFrame(draw);
+    return () => { cancelAnimationFrame(animId); window.removeEventListener("resize", resize); };
   }, [mounted, theme]);
   useEffect(()=>{const f=()=>setSy(window.scrollY);window.addEventListener("scroll",f);return()=>window.removeEventListener("scroll",f)},[]);
   const openForm=()=>setShowForm(true);
@@ -278,7 +303,7 @@ export default function Landing() {
       {mounted && (
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1 || (theme === "dark" ? "#00d4ff05" : "#0891B206")} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2 || (theme === "dark" ? "#8b5cf605" : "#7C3AED04")} 0%, transparent 50%)` }} />
-        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.08 : 0.03 }} />
+        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.18 }} />
       </div>
       )}
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
