@@ -194,55 +194,62 @@ export default function Landing() {
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
-    if (!mounted || theme !== "dark") return;
+    if (!mounted) return;
     const canvas = matrixRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const fontSize = 28;
-    /** Дробный шаг: в 2× медленнее прежнего (1/3 → 1/6) */
-    const fallSpeed = 1 / 6;
-    const chars =
-      "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789";
-    const drops: number[] = [];
-    const lastIntRow: number[] = [];
-    const colChar: string[] = [];
+    let columns = 0;
+    let drops: number[] = [];
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      const columns = Math.floor(canvas.width / fontSize);
-      drops.length = columns;
-      lastIntRow.length = columns;
-      colChar.length = columns;
-      for (let i = 0; i < columns; i++) {
-        drops[i] = Math.random() * -100;
-        lastIntRow[i] = Math.floor(drops[i]);
-        colChar[i] = chars[Math.floor(Math.random() * chars.length)];
-      }
+      const fontSize = 12;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(0).map(() => Math.floor(Math.random() * -50));
     };
     resize();
     window.addEventListener("resize", resize);
 
-    let animId = 0;
+    const fontSize = 12;
+    const chars =
+      "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    let animId: number;
     const draw = () => {
-      ctx.fillStyle = "rgba(5, 5, 8, 0.08)";
+      // Полупрозрачная заливка фоном — создаёт шлейф
+      ctx.fillStyle = theme === "dark" ? "rgba(5, 5, 8, 0.05)" : "rgba(250, 251, 252, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00d4ff";
+
       ctx.font = `${fontSize}px monospace`;
 
-      for (let i = 0; i < drops.length; i++) {
-        const ri = Math.floor(drops[i]);
-        if (ri !== lastIntRow[i]) {
-          lastIntRow[i] = ri;
-          colChar[i] = chars[Math.floor(Math.random() * chars.length)];
+      for (let i = 0; i < columns; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        // Яркий символ на конце — зелёный как в Матрице
+        const green = theme === "dark" ? "#00ff41" : "#15803d";
+        ctx.fillStyle = green;
+        ctx.globalAlpha = 0.8;
+        ctx.fillText(char, x, y);
+
+        // Тусклый шлейф выше
+        if (drops[i] > 0) {
+          const trailChar = chars[Math.floor(Math.random() * chars.length)];
+          ctx.globalAlpha = 0.15;
+          ctx.fillText(trailChar, x, y - fontSize);
         }
-        ctx.fillText(colChar[i], i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+
+        ctx.globalAlpha = 1;
+
+        // Сброс колонки когда ушла за экран
+        if (y > canvas.height) {
+          if (Math.random() > 0.98) drops[i] = 0;
         }
-        drops[i] += fallSpeed;
+        drops[i]++;
       }
       animId = requestAnimationFrame(draw);
     };
@@ -271,9 +278,7 @@ export default function Landing() {
       {mounted && (
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1 || (theme === "dark" ? "#00d4ff05" : "#0891B206")} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2 || (theme === "dark" ? "#8b5cf605" : "#7C3AED04")} 0%, transparent 50%)` }} />
-        {theme === "dark" && (
-          <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.24 }} />
-        )}
+        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.08 : 0.03 }} />
       </div>
       )}
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
