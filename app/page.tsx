@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const themes = {
   dark: {
@@ -54,11 +54,22 @@ const CTABtn = ({ children, big, onClick, C, theme }: { children: React.ReactNod
 
 const Timer = ({ C }: { C: ThemeColors }) => {
   const target = new Date("2026-04-14T19:00:00+03:00").getTime();
-  const [diff, setDiff] = useState(target - Date.now());
+  const [diff, setDiff] = useState(0);
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
+    setMounted(true);
+    setDiff(target - Date.now());
     const i = setInterval(() => setDiff(target - Date.now()), 1000);
     return () => clearInterval(i);
   }, [target]);
+
+  if (!mounted) {
+    return (
+      <div className="nu-timer-row" style={{ display: "flex", gap: 8, justifyContent: "center", alignItems: "center" }}>
+        Вторник, 14 апреля 2026 — 19:00 МСК
+      </div>
+    );
+  }
 
   const totalSec = Math.max(0, Math.floor(diff / 1000));
   const d = Math.floor(totalSec / 86400);
@@ -172,6 +183,8 @@ export default function Landing() {
   const [theme, setTheme] = useState<ThemeName>("dark");
   const C = themes[theme];
 
+  const [mounted, setMounted] = useState(false);
+  const matrixRef = useRef<HTMLCanvasElement>(null);
   const [sy,setSy]=useState(0);const [showForm,setShowForm]=useState(false);
   const [testStep, setTestStep] = useState(0);
   const [testAnswers, setTestAnswers] = useState<number[]>([]);
@@ -179,6 +192,53 @@ export default function Landing() {
 
   const lessonCards = getLessonCards(C);
 
+  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    if (!mounted) return;
+    const canvas = matrixRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const fontSize = 14;
+    const chars =
+      "\u30a2\u30a4\u30a6\u30a8\u30aa\u30ab\u30ad\u30af\u30b1\u30b3\u30b5\u30b7\u30b9\u30bb\u30bd\u30bf\u30c1\u30c4\u30c6\u30c8\u30ca\u30cb\u30cc\u30cd\u30ce\u30cf\u30d2\u30d5\u30d8\u30db\u30de\u30df\u30e0\u30e1\u30e2\u30e4\u30e6\u30e8\u30e9\u30ea\u30eb\u30ec\u30ed\u30ef\u30f2\u30f30123456789";
+    const drops: number[] = [];
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const columns = Math.floor(canvas.width / fontSize);
+      drops.length = columns;
+      for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    let animId = 0;
+    const draw = () => {
+      ctx.fillStyle = theme === "dark" ? "rgba(5, 5, 8, 0.08)" : "rgba(250, 251, 252, 0.08)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = theme === "dark" ? "#00d4ff" : "#0891B2";
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      animId = requestAnimationFrame(draw);
+    };
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, [mounted, theme]);
   useEffect(()=>{const f=()=>setSy(window.scrollY);window.addEventListener("scroll",f);return()=>window.removeEventListener("scroll",f)},[]);
   const openForm=()=>setShowForm(true);
 
@@ -192,40 +252,14 @@ export default function Landing() {
   const testScore = testAnswers.reduce((a, b) => a + b, 0);
   const testLevelNow = getTestLevel(testScore);
 
-  const matrixFill = theme === "dark" ? "#00d4ff" : C.cyan;
-
   return (
-    <div style={{minHeight:"100vh",background:C.bg,color:C.text,fontFamily:"'Inter','Segoe UI',sans-serif",overflowX:"hidden",position:"relative"}}>
+    <div suppressHydrationWarning style={{minHeight:"100vh",background:C.bg,color:C.text,fontFamily:"'Inter','Segoe UI',sans-serif",overflowX:"hidden",position:"relative"}}>
+      {mounted && (
       <div style={{ position: "fixed", inset: 0, zIndex: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2} 0%, transparent 50%)` }} />
-        <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 1 : 0.4 }}>
-          <defs>
-            <style>{`
-              @keyframes fall {
-                0% { transform: translateY(-100vh); opacity: 0; }
-                10% { opacity: 0.15; }
-                90% { opacity: 0.15; }
-                100% { transform: translateY(100vh); opacity: 0; }
-              }
-              .matrix-col text {
-                font-family: 'Courier New', monospace;
-                font-size: 14px;
-                fill: ${matrixFill};
-                opacity: 0;
-              }
-            `}</style>
-          </defs>
-          {Array.from({ length: 25 }).map((_, col) => (
-            <g key={col} className="matrix-col" style={{ animation: `fall ${8 + Math.random() * 12}s linear ${Math.random() * 10}s infinite` }}>
-              {Array.from({ length: 12 }).map((_, row) => (
-                <text key={row} x={`${col * (100 / 25)}%`} y={row * 60} style={{ animationDelay: `${Math.random() * 5}s` }}>
-                  {String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96))}
-                </text>
-              ))}
-            </g>
-          ))}
-        </svg>
+        <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.bgGlow1 || (theme === "dark" ? "#00d4ff05" : "#0891B206")} 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, ${C.bgGlow2 || (theme === "dark" ? "#8b5cf605" : "#7C3AED04")} 0%, transparent 50%)` }} />
+        <canvas ref={matrixRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: theme === "dark" ? 0.12 : 0.05 }} />
       </div>
+      )}
       <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
       <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}*{box-sizing:border-box;margin:0;padding:0}body{background:${C.bg};transition:background 0.3s}::selection{background:${C.cyan}30}input::placeholder{color:${C.dim}}.nu-gradient-text{background:linear-gradient(135deg,#00d4ff,#8b5cf6,#00d4ff);background-size:200% auto;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;animation:shimmer 4s linear infinite}.nu-gradient-text-light{background:linear-gradient(135deg,#0891B2,#7C3AED,#0891B2);background-size:200% auto;-webkit-background-clip:text !important;-webkit-text-fill-color:transparent !important;background-clip:text !important;animation:shimmer 4s linear infinite}@media (max-width:640px){.nu-author-card{flex-direction:column!important;align-items:stretch!important}.nu-author-photo{max-height:360px!important;flex:none!important;width:100%!important;align-self:stretch!important}.nu-timer-row{flex-wrap:wrap;gap:6px 8px!important;row-gap:10px!important;justify-content:center!important;padding:0 4px}}`}</style>
       <LeadModal
