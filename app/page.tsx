@@ -119,13 +119,21 @@ const LeadModal = ({ open, onClose, testResult, theme = "dark" }: { open: boolea
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setErrors({});
     setLoading(true);
-    try {
+    const postLead = async () => {
       const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone, testResult }),
       });
       if (!res.ok) throw new Error("fail");
+    };
+    try {
+      try {
+        await postLead();
+      } catch {
+        await new Promise((r) => setTimeout(r, 1500));
+        await postLead();
+      }
       setSent(true);
     } catch {
       setErrors({ email: "Ошибка отправки. Попробуй ещё раз." });
